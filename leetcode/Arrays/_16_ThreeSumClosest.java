@@ -25,7 +25,7 @@ import java.util.Arrays;
  *         10^4
  *
  */
-public class _16_ThreeSumClosest {
+public class SegmentTreeDemoThreeSumClosest {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
