@@ -78,4 +78,50 @@ public class _164_Maximum_Gap {
         }
         return ans;
     }
+    //=============================================================================================
+    // Radix Sort with counting sort
+    public int maximumGap1(int[] nums) {
+
+        if (nums == null || nums.length < 2) {
+            return 0;
+        }
+        int max = Integer.MIN_VALUE;
+
+        for (int num : nums) {
+            max = Math.max(max, num);
+        }
+        int radix = 10;
+        int div = 1;
+
+        while (max / div > 0) {
+            int cache[] = new int[nums.length];
+            int count[] = new int[radix];
+            // count sort
+            for (int num : nums) {
+                int pos = (num / div) % radix;
+                count[pos]++;
+            }
+
+            for (int i = 1; i < radix; i++) {
+                count[i] += count[i - 1];
+            }
+
+            for (int i = nums.length - 1; i >= 0; i--) {
+                int pos = (nums[i] / div) % radix;
+                int index = --count[pos];
+                cache[index] = nums[i];
+            }
+
+            for (int i = 0; i < nums.length; i++) {
+                nums[i] = cache[i];
+            }
+            div *= 10;
+        }
+        int ans = 0;
+
+        for (int i = 1; i < nums.length; i++) {
+            ans = Math.max(ans, nums[i] - nums[i - 1]);
+        }
+        return ans;
+    }
 }

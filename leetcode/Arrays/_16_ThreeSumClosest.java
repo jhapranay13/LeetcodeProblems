@@ -24,8 +24,9 @@ import java.util.Arrays;
  *         3 <= nums.length <= 10^3 -10^3 <= nums[i] <= 10^3 -10^4 <= target <=
  *         10^4
  *
+ * SegmentTreeDemo
  */
-public class SegmentTreeDemoThreeSumClosest {
+public class _16_ThreeSumClosest {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
