@@ -1,4 +1,4 @@
-package leetcode.Tree;
+package leetcode.medium;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +93,7 @@ public class _2415_Reverse_Odd_Levels_of_Binary_Tree {
             node1.val = node2.val;
             node2.val = temp;
         }
-
+    
         if (node1.left != null) {
             recur(node1.left, node2.right, level + 1);
             recur(node1.right, node2.left, level + 1);
