@@ -67,4 +67,32 @@ public class _220_Contains_Duplicate_III {
         }
         return false;
     }
+    //=============================================================================================
+    // Other way
+    public boolean containsNearbyAlmostDuplicate1(int[] nums, int indexDiff, int valueDiff) {
+        // since abs(nums[i] - nums[j]) <= valueDiff
+        // if nums[i] < nums[j] equation becomes nums[j] >= valueDiff + nums[i]
+        // if nums[i] > nums[j] equation becomes nums[i] >= valueDiff + nums[j]
+        TreeSet<Integer> holder = new TreeSet<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            Integer val = holder.floor(num);
+            // nums[i] <= nums[j]
+            if (val != null && num <= valueDiff + val) {
+                return true;
+            }
+            val = holder.ceiling(num);
+            // nums[i] >= nums[j]
+            if (val != null && val <= valueDiff + num) {
+                return true;
+            }
+            holder.add(num);
+            // If holder.size is greater than index diff then window size has       exceeded
+            if (holder.size() > indexDiff) {
+                holder.remove(nums[i - indexDiff]);
+            }
+        }
+        return false;
+    }
 }
