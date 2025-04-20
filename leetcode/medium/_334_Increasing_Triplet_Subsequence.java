@@ -49,4 +49,36 @@ public class _334_Increasing_Triplet_Subsequence {
         }
         return false;
     }
+    //=======================================================================
+    // Another Version
+    public boolean increasingTriplet2(int[] nums) {
+        int leftToRightMin[] = new int[nums.length];
+
+        for (int i = 0; i < nums.length; i++) {
+
+            if (i == 0) {
+                leftToRightMin[i] = nums[i];
+            } else {
+                leftToRightMin[i] = Math.min(leftToRightMin[i - 1], nums[i]);
+            }
+        }
+        int rightToLeftMax[] = new int[nums.length];
+
+        for (int i = nums.length - 1; i >= 0; i--) {
+
+            if (i == nums.length - 1) {
+                rightToLeftMax[i] = nums[i];
+            } else {
+                rightToLeftMax[i] = Math.max(rightToLeftMax[i + 1], nums[i]);
+            }
+        }
+
+        for (int i = 1; i < nums.length - 1; i++) {
+
+            if (leftToRightMin[i - 1] < nums[i] && rightToLeftMax[i + 1] > nums[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
