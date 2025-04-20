@@ -45,6 +45,90 @@ public class _301_RemoveInvalidParenthesis {
 		// TODO Auto-generated method stub
 
 	}
+	// =====================================================================
+	// Latest all test cases
+	public List<String> removeInvalidParentheses4(String s) {
+		int countDiff = outOfPositionCount(s);
+		List<String> ans = new ArrayList<>();
+
+		if (countDiff == 0 && isValid(s)) {
+			ans.add(s);
+			return ans;
+		}
+		countDiff = countDiff < 0 ? -countDiff : countDiff;
+		Deque<String> q = new LinkedList<>();
+		Set<String> v = new HashSet<>();
+		q.offer(s);
+		v.add(s);
+
+		while (!q.isEmpty()) {
+			int size = q.size();
+
+			while(size-- > 0) {
+				String expr = q.poll();
+
+				if (s.length() - expr.length() > countDiff) {
+					continue;
+				} else if (s.length() - expr.length() == countDiff && isValid(expr)) {
+					ans.add(expr);
+					continue;
+				} else if (s.length() - expr.length() == countDiff && !isValid(expr)) {
+					continue;
+				}
+
+				for (int i = 0 ; i < expr.length(); i++) {
+					String left = expr.substring(0, i);
+					String right = expr.substring(i + 1);
+					String full = left + right;
+
+					if (v.add(full)) {
+						q.offer(full);
+					}
+				}
+			}
+		}
+
+		if (ans.isEmpty()) {
+			ans.add("");
+		}
+		return ans;
+	}
+
+	private int outOfPositionCount(String s) {
+		Deque<Character> stack = new LinkedList<>();
+
+		for (char ch : s.toCharArray()) {
+
+			if (ch == '(') {
+				stack.push(ch);
+			}
+
+			if (ch == ')' && !stack.isEmpty() && stack.peek() == '(') {
+				stack.pop();
+			} else if (ch == ')') {
+				stack.push(ch);
+			}
+		}
+		return stack.size();
+	}
+
+	private boolean isValid(String s) {
+		Deque<Character> stack = new LinkedList<>();
+
+		for (char ch : s.toCharArray()) {
+
+			if (ch == '(') {
+				stack.push(ch);
+			}
+
+			if (ch == ')' && !stack.isEmpty() && stack.peek() == '(') {
+				stack.pop();
+			} else if (ch == ')') {
+				stack.push(ch);
+			}
+		}
+		return stack.isEmpty();
+	}
 
 	// =====================================================================
 	// Passes all test cases
