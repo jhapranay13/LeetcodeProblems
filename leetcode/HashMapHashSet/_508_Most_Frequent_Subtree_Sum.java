@@ -110,4 +110,41 @@ public class _508_Most_Frequent_Subtree_Sum {
         }
         return node.val + initSum(node.left) + initSum(node.right);
     }
+    //=============================================================================================
+    // Another Little optimal solution
+    public int[] findFrequentTreeSum1(TreeNode root) {
+        recur1(root);
+        List<Integer> holder = new ArrayList<>();
+
+        for (int sum : sumFreq1.keySet()) {
+
+            if (sumFreq1.get(sum) == maxFreq) {
+                holder.add(sum);
+            }
+        }
+        int[] ans = new int[holder.size()];
+
+        for (int i = 0; i < holder.size(); i++) {
+            ans[i] = holder.get(i);
+        }
+        return ans;
+    }
+
+    int maxFreq = 0;
+    Map<Integer, Integer> sumFreq1 = new HashMap<>();
+
+    private int recur1(TreeNode node) {
+
+        if (node == null) {
+            return 0;
+        }
+        int left = recur1(node.left);
+        int right = recur1(node.right);
+        int sum = node.val + left + right;
+        int freq = sumFreq.getOrDefault(sum, 0);
+        ++freq;
+        maxFreq = Math.max(freq, maxFreq);
+        sumFreq1.put(sum, freq);
+        return sum;
+    }
 }

@@ -2,6 +2,7 @@ package leetcode.StackAndQueues.Monotonic;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 /**
  *
@@ -41,7 +42,7 @@ public class _1425_Constrained_Subsequence_Sum {
         Deque<Integer> mono = new LinkedList<>();
         int[] holder = new int[nums.length];
         int ans = Integer.MIN_VALUE;
-
+        // Decreasing queue will give me the maximum sum of the previous k elements in the first position
         for (int i = 0; i < nums.length; i++) {
             holder[i] = nums[i] + (mono.isEmpty() ? 0 : holder[mono.peekFirst()]);
             ans = Math.max(holder[i], ans);
@@ -57,6 +58,24 @@ public class _1425_Constrained_Subsequence_Sum {
             while (!mono.isEmpty() && mono.peekFirst() <= i - k) {
                 mono.pollFirst();
             }
+        }
+        return ans;
+    }
+    //=============================================================================================
+    // Similar way to do it with a priority queue
+    public int constrainedSubsetSum1(int[] nums, int k) {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]);
+        int ans = nums[0];
+        pq.offer(new int[] {nums[0], 0});
+
+        for (int i = 1; i < nums.length; i++) {
+
+            while (!pq.isEmpty() && i - pq.peek()[1] > k) {
+                pq.poll();
+            }
+            int currSum = Math.max(0, pq.peek()[0]) + nums[i];
+            ans = Math.max(ans, currSum);
+            pq.offer(new int[] {currSum, i});
         }
         return ans;
     }
