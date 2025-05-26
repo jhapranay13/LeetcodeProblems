@@ -60,6 +60,18 @@ public class _2355_Maximum_Number_of_Books_You_Can_Take {
         Deque<Integer> mq = new LinkedList<>();
         long ans = 0;
         long curr = 0;
+        /*
+        Imagine that we have taken books[i] books from shelf i.
+        We try to take books[i]−1 books from shelf i−1,
+        if there are enough of them there (if books[i−1]≥books[i]−1).
+        Then we proceed to shelf i−2: take books[i]−2 books from shelf i−2,
+        if books[i−2]≥books[i]−2. At some point, we will encounter index j
+        such that j<i and books[j]<books[i]−(i−j), or written differently,
+        books[j]−j<books[i]−i.
+        rearrange to get the condition for the monotonic queue:
+
+        pop it to get the entire range of shelves
+         */
 
         for (int i = 0; i < books.length; i++) {
 
