@@ -52,7 +52,7 @@ public class _1079_Letter_Tile_Possibilities {
             if (!used.add(tiles[i])) {
                 continue;
             }
-            ans++;
+            ans++; // // count current prefix as a valid sequence
             swap(tiles, i, index);
             ans += recur(tiles, index + 1);
             swap(tiles, i, index);
