@@ -70,6 +70,8 @@ public class _2272_Substring_With_Largest_Variance {
                     if (c == c2) {
                         c2Freq++;
                     }
+                    // If c2-count < c1-count then we reset the counters, only if we know there are more c1 chars to come in the iteration
+                    // c1Remaining check is required for the test case "baa" and c1=b && c2=a. We don't reset the counters if there are no more c1 chars left
 
                     if (c2Freq < c1Freq && remainingC1 > 0) {
                         c1Freq = 0;
