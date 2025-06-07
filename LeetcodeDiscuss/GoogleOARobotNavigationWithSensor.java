@@ -62,10 +62,20 @@ public class GoogleOARobotNavigationWithSensor {
         int w = 10;
         int h = 10;
         */
-        List<List<Integer>> positions = Arrays.asList(
+       /* List<List<Integer>> positions = Arrays.asList(
                 Arrays.asList(9, 5, 1),
                 Arrays.asList(5, 9, 1),
                 Arrays.asList(8, 8, 3)
+        );
+        int w = 10;
+        int h = 10;
+        */
+
+        List<List<Integer>> positions = Arrays.asList(
+                Arrays.asList(4, 3, 3),
+                Arrays.asList(5, 8, 1),
+                Arrays.asList(8, 6, 2),
+                Arrays.asList(8, 9, 1)
         );
         int w = 10;
         int h = 10;
@@ -77,15 +87,6 @@ public class GoogleOARobotNavigationWithSensor {
         boolean hiWallBlocked = false;
         boolean leftWallBlocked = false;
         boolean rightWallBlocked = false;
-
-        Collections.sort(positions, (a, b) -> {
-
-            if (a.get(0) == b.get(0)) {
-                return Integer.compare(a.get(1), b.get(1));
-            }
-            return Integer.compare(a.get(0), b.get(0));
-        });
-        List<Integer> previous = null;
         int n = w * h;
         UnionFind uf = new UnionFind(n + 4); // +4 for walls
         // n == lo
@@ -93,39 +94,42 @@ public class GoogleOARobotNavigationWithSensor {
         // n + 2 == left
         // n + 3 == right
 
-        for (List<Integer> sensor : positions) {
+        for (int i = 0; i < positions.size(); i++) {
+            List<Integer> sensor = positions.get(i);
             int x = sensor.get(0);
             int y = sensor.get(1);
             int r = sensor.get(2);
             int id = y + x * w;
 
-            if (x - r <= 0 && !leftWallBlocked) {
+            if (x - r <= 0) {
                 leftWallBlocked = true;
                 uf.union(id, n + 2); // Connect to left wall
             }
 
-            if (x + r >= w - 1 && !rightWallBlocked) {
+            if (x + r >= w - 1) {
                 rightWallBlocked = true;
                 uf.union(id, n + 3); // Connect to right wall
             }
 
-            if (y - r <= 0 && !loWallBlocked) {
+            if (y - r <= 0) {
                 loWallBlocked = true;
                 uf.union(id, n); // Connect to lo wall
             }
 
-            if (y + r >= h - 1 && !hiWallBlocked) {
+            if (y + r >= h - 1) {
                 hiWallBlocked = true;
                 uf.union(id, n + 1); // Connect to hi wall
             }
 
-            if (previous != null) {
-                int prevX = previous.get(0);
-                int prevY = previous.get(1);
-                int prevR = previous.get(2);
+            for (int j = i + 1; j < positions.size(); j++) {
 
-                if (distance(x, y, prevX, prevY) <= r + prevR) {
-                    uf.union(x * w + y, prevY + w * prevX);
+                List<Integer> next = positions.get(j);
+                int nextX = next.get(0);
+                int nextY = next.get(1);
+                int nextR = next.get(2);
+
+                if (distance(x, y, nextX, nextY) <= r + nextR) {
+                    uf.union(x * w + y, nextY + w * nextX);
                 }
             }
 
@@ -135,7 +139,6 @@ public class GoogleOARobotNavigationWithSensor {
                     (hiWallBlocked && rightWallBlocked && uf.find(n + 1) == uf.find(n + 3))) {
                 return false;
             }
-            previous = sensor;
         }
         return true;
     }

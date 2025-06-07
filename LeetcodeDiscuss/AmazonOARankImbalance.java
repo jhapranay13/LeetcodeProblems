@@ -3,6 +3,17 @@ package LeetcodeDiscuss;
 import java.util.Deque;
 import java.util.LinkedList;
 
+/**
+ *
+ * "Given an array arr of integers, find the total number of 'imbalanced pairs'.
+ * An 'imbalanced pair' (arr[j], arr[k]) is defined as a pair where arr[j] is a greater
+ * element than arr[k], and arr[k] is the next smaller element to arr[j] in a
+ * specific direction (either to its right or to its left), such that the difference
+ * in their values (arr[j] - arr[k]) is not equal to the absolute difference in their
+ * indices (|j - k|)."
+ *
+ */
+
 public class AmazonOARankImbalance {
 
     private static int findTotalImbalance(int[] arr) {

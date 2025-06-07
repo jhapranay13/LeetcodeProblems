@@ -91,6 +91,10 @@ public class _834_Sum_of_Distances_in_Tree {
     // You get this pattern if you check fe patterns first find for 0 then find for
     // child of zero and see how much gets added or subtracted
     // result[child] = result[parent_node] - count[child] + (N - count[child]);
+    // We you move from root to child, the distance to all nodes in the subtree of child decreases by 1,
+    // and the distance to all other nodes increases by 1.
+    // So number of nodes that will decrease by one is count[child],
+    // and number of nodes that will increase by one is N - count[child].
     private void recurAns(Map<Integer, Set<Integer>> adjacency, int[] countNode, int[] ans, int curr,
                           int parent) {
         Set<Integer> children = adjacency.getOrDefault(curr, new HashSet<>());
