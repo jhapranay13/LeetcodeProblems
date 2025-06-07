@@ -22,33 +22,40 @@ import java.util.*;
 public class AmazonOAMaxAreaOfAllRectanglesFormed {
 
     public static void main(String ...args) {
-       int[] arr = {2, 3, 3, 4, 6, 6, 8, 8};
+        int[] arr = {2, 3, 3, 4, 6, 6, 8, 8};
         System.out.println(maxArea(arr)); // Output: 54
+        System.out.println(maxArea1(arr)); // Output: 54
+
 
         int[] arr2 = {2, 1, 6, 5, 4, 4};
         System.out.println(maxArea(arr2)); // Output: 20
+        System.out.println(maxArea1(arr2)); // Output: 20
 
         int[] arr3 = {1, 2, 3, 4};
         System.out.println("Input 3: " + Arrays.toString(arr3));
         System.out.println("Output 3: " + maxArea(arr3)); // Expected: 3
+        System.out.println("Output 3: " + maxArea1(arr3)); // Expected: 3
 
         // Case 2: Only exact pairs
         int[] arr4 = {5, 5, 10, 10, 10, 10};
         // Rectangles: 10x10 -> 100
         System.out.println("Input 4: " + Arrays.toString(arr4));
         System.out.println("Output 4: " + maxArea(arr4));
+        System.out.println("Output 4: " + maxArea1(arr4));
 
         int[] arr6 = {1, 2, 2, 3, 3, 3, 5, 5, 6, 7};
         // Rectangles: 6 * 5 + 3 * 2
         System.out.println("Input 6: " + Arrays.toString(arr6));
         System.out.println("Output 6: " + maxArea(arr6));
+        System.out.println("Output 6: " + maxArea1(arr6));
 
         // Test Case 3: No rectangles possible (less than 4 sticks, or no pairs)
         int[] arr3_a = {1, 2, 3}; // Less than 4 sticks
         System.out.println("Input 3a: " + Arrays.toString(arr3_a));
         System.out.println("Output 3a (Expected: 0): " + maxArea(arr3_a));
+        System.out.println("Output 3a (Expected: 0): " + maxArea1(arr3_a));
 
-        int[] arr5 = {1, 1, 1, 1, 2, 2, 2, 3, 3, 4};
+        int[] arr5 = {1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 5, 5};
         // Sorted: [1,1,1,1,2,2,2,3,3,4]
         // counts: {1:4, 2:3, 3:2, 4:1}
         // i=4: c=1. leftover 4. pair with 3. Yes. Add 3 to pairs. counts[3]=1, counts[4]=0. pairs=[3]
@@ -60,6 +67,7 @@ public class AmazonOAMaxAreaOfAllRectanglesFormed {
         // Area: (3 * 2) + (2 * 1) = 6 + 2 = 8.
         System.out.println("Input 5: " + Arrays.toString(arr5));
         System.out.println("Output 5 (Expected: 8): " + maxArea(arr5));
+        System.out.println("Output 5 (Expected: 8): " + maxArea1(arr5));
     }
 
     private static int maxArea(int[] arr) {
@@ -94,6 +102,70 @@ public class AmazonOAMaxAreaOfAllRectanglesFormed {
             ans += area;
         }
 
+        return ans;
+    }
+
+    private static int maxArea1(int[] arr) {
+        int ans = 0;
+        Map<Integer, Integer> freqMap = new HashMap<>();
+
+        for (int num : arr) {
+            freqMap.put(num, freqMap.getOrDefault(num, 0) + 1);
+        }
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+
+        for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
+            pq.offer(entry.getKey());
+        }
+
+        while (!pq.isEmpty()) {
+            int num = pq.poll();
+            int count = freqMap.get(num);
+
+            if (count >= 4) {
+                int multiple = count / 4;
+                ans += num * num * multiple;
+                count %= 4; // Remaining sticks after forming squares
+            }
+
+            if (count >= 2) {
+                // If we have at least 2 sticks, we can form a rectangle
+                if (!pq.isEmpty()) {
+                    int nextNum = pq.peek();
+                    int nextCount = freqMap.get(nextNum);
+                    int remaining = count % 2;
+                    nextCount += remaining;
+
+                    if (nextCount >= 2) {
+                        ans += num * nextNum;
+
+                        if (nextCount == 2) {
+                            pq.poll(); // Remove the nextNum from the queue if we used it
+                        } else {
+                            freqMap.put(nextNum, nextCount - 2);
+                        }
+                    } else if ( nextCount == 1) {
+                        pq.poll(); // Remove the nextNum from the queue if we used it
+
+                        if (!pq.isEmpty()) {
+                            int nextNextNum = pq.peek();
+                            int nextNextCount = freqMap.get(nextNextNum);
+                            freqMap.put(nextNextNum, nextNextCount + nextCount);
+                        }
+                        pq.offer(num);
+                    }
+                }
+            }
+
+            if (count == 1) {
+
+                if (!pq.isEmpty()) {
+                    int nextNum = pq.peek();
+                    int nextCount = freqMap.get(nextNum);
+                    freqMap.put(nextNum, nextCount + count);
+                }
+            }
+        }
         return ans;
     }
 }
