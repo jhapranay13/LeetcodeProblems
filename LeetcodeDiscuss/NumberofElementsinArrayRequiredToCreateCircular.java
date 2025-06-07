@@ -5,7 +5,8 @@ import java.util.*;
 /**
  * Ran into this problem a few days back. Does anyone know how to solve this?
  *
- * Given an array of integers of size n, find the maximum number of integers k that can be selected from this array such that re-arranging these k integers into a circular array allows for an ordering that ensures the absolute difference between any two adjacent integers is at most 1.
+ * Given an array of integers of size n, find the maximum number of integers k that
+ * can be selected from this array such that re-arranging these k integers into a circular array allows for an ordering that ensures the absolute difference between any two adjacent integers is at most 1.
  *
  * Examples:
  * Input: [4, 3, 5, 1, 2, 2, 1]
