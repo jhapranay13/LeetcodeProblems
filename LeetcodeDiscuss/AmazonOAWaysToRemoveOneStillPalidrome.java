@@ -9,7 +9,7 @@ package LeetcodeDiscuss;
 public class AmazonOAWaysToRemoveOneStillPalidrome {
 
     public static void main(String[] args) {
-        System.out.println("String: \"aba\" -> Ways: " + countWaysToRemoveOne("aba")); // Expected: 1 (remove 'b' -> "aa")
+       System.out.println("String: \"aba\" -> Ways: " + countWaysToRemoveOne("aba")); // Expected: 1 (remove 'b' -> "aa")
         System.out.println("String: \"abca\" -> Ways: " + countWaysToRemoveOne("abca")); // Expected: 1 (remove 'b' -> "aca")
         System.out.println("String: \"racecar\" -> Ways: " + countWaysToRemoveOne("racecar")); // Expected: 0
         System.out.println("String: \"abacaba\" -> Ways: " + countWaysToRemoveOne("abacaba")); // Expected: 1 (remove middle 'c' -> "abaaba")
@@ -23,6 +23,7 @@ public class AmazonOAWaysToRemoveOneStillPalidrome {
         System.out.println("String: \"google\" -> Ways: " + countWaysToRemoveOne("google")); // Expected: 0
         System.out.println("String: \"topcoderopen\" -> Ways: " + countWaysToRemoveOne("topcoderopen")); // Expected: 0
         System.out.println("String: \"aaaa\" -> Ways: " + countWaysToRemoveOne("aaaa")); // Expected: 4 (removing any 'a' leaves "aaa")
+
     }
     static long prime = 37;
     static int mod = 1000000007;
@@ -52,6 +53,7 @@ public class AmazonOAWaysToRemoveOneStillPalidrome {
             int lengthRight = n - removeIndex;
             long fwdHashLeft = getHash(0, removeIndex - 1, hash);
             long fwdHashRight = getHash(removeIndex + 1, n, hash);
+            // Calculating reverse hashes where n is treated like 0 and indexes are calculated accordingly
             long revHashRight = reverseGetHash(0, n - (removeIndex + 1), reverseHash);
             long revHashLeft = reverseGetHash(n - (removeIndex - 1), n, reverseHash);
             long combineFwdHash = (fwdHashRight + (fwdHashLeft * powers[lengthRight]) % mod) % mod;
@@ -100,4 +102,5 @@ public class AmazonOAWaysToRemoveOneStillPalidrome {
             hash[i] = (hash[i - 1] * prime + (str.charAt(i) - 'a' + 1)) % mod;
         }
     }
+
 }
