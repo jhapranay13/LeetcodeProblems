@@ -110,4 +110,111 @@ public class _2234_Maximum_Total_Beauty_of_the_Gardens {
         }
         return ans;
     }
+    //=============================================================================================
+    // Prefix Sum Sorting Binary Search
+    public long maximumBeauty1(int[] flowers, long newFlowers, int target, int full, int partial) {
+        int n = flowers.length;
+        long[] prefix = new long[n];
+        Arrays.sort(flowers);
+
+        if (flowers[0] >= target){
+            return 1L*full*flowers.length;
+        }
+
+        for (int i = 0; i < n; i++) {
+
+            if (i == 0) {
+                prefix[i] = flowers[i];
+            } else {
+                prefix[i] = prefix[i - 1] + flowers[i];
+            }
+        }
+        int rightIdx = n - 1;
+
+        while (rightIdx >= 0 && flowers[rightIdx] >= target) {
+            rightIdx--;
+        }
+        int countAboveOrEqTarget = n - 1 - rightIdx;
+        long beforeCalc = 0;
+
+        if (countAboveOrEqTarget > 0) {
+            beforeCalc = countAboveOrEqTarget * full;
+
+            if (countAboveOrEqTarget == n) {
+                return beforeCalc;
+            }
+        }
+        long ans = 0;
+
+        for (int index = rightIdx; index >= 0; index--) {
+            int indx = rightIdx;
+            long remainingFlower = newFlowers;
+            int fullCount = 0;
+
+            if (index < rightIdx) {
+                // this will lead to all full and one partial since it will check for i > index
+                // so will never check if zero can be transformed into full
+                int count = rightIdx - index;
+                long flowerPresent = (long)prefix[rightIdx] - prefix[index];
+                long flowerNeeded = (long)target * count - flowerPresent;
+
+                if (flowerNeeded <= remainingFlower) {
+                    remainingFlower = (long)remainingFlower - flowerNeeded;
+                    fullCount = count;
+                } else {
+                    fullCount = 0;
+                    break;
+                }
+            }
+            long fullValue = (long) fullCount * full;
+            indx -= fullCount;
+            int lo = 0;
+            int hi = target - 1;
+            long partialValue = 0;
+
+            while (lo <= hi) {
+                int pivot = lo + (hi - lo) / 2;
+                // Trying to make minimum as pivot;
+                int count = getCount(flowers, pivot, indx);
+                long flowersNeeded = (long)pivot * count - (count == 0 ? 0 : prefix[count -1]);
+
+                if (flowersNeeded <= remainingFlower) {
+                    lo = pivot + 1;
+                    partialValue = pivot;
+                } else {
+                    hi = pivot - 1;
+                }
+            }
+            long temp = partialValue * partial;
+            ans = Math.max(ans, (long) beforeCalc + fullValue + temp);
+        }
+        // checking if zero can be transformed to full
+        long totalFlowerPresent = prefix[rightIdx];
+        long flowerNeeded = (long) target * rightIdx + 1;
+        long totalFlowerNeeded = (long)flowerNeeded - totalFlowerPresent;
+
+        if (totalFlowerNeeded <= newFlowers) {
+            long temp = (long)full * n;
+            ans = Math.max(ans, temp);
+        }
+        return ans;
+    }
+
+    private int getCount(int[] flowers, int val, int index) {
+        int lo = 0;
+        int hi = index + 1;
+        int count = 0;
+
+        while (lo < hi) {
+            int pivot = lo + (hi - lo) / 2;
+
+            if (flowers[pivot] <= val) {
+                lo = pivot + 1;
+                count = pivot + 1;
+            } else {
+                hi = pivot;
+            }
+        }
+        return count;
+    }
 }

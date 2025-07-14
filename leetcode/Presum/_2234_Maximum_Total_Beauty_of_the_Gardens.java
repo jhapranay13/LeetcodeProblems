@@ -1,4 +1,4 @@
-package leetcode.Greedy;
+package leetcode.Presum;
 
 import java.util.Arrays;
 

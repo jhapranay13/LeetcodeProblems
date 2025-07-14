@@ -1,4 +1,4 @@
-package leetcode.Greedy;
+package leetcode.BinarySearch;
 
 import java.util.Arrays;
 
