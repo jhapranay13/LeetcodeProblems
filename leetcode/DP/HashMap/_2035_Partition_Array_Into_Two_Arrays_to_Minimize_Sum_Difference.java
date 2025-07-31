@@ -41,66 +41,69 @@ public class _2035_Partition_Array_Into_Two_Arrays_to_Minimize_Sum_Difference {
     //=============================================================================================
     //Need more understanding on Meet in middle technique
     public int minimumDifference1(int[] nums) {
-        int total = Arrays.stream(nums).sum();
-        int n = nums.length/2;
+        int length = nums.length / 2;
+        Map<Integer, List<Integer>> sizeLeftSum = new HashMap<>();
+        Map<Integer, List<Integer>> sizeRightSum = new HashMap<>();
+        recur(nums, sizeLeftSum, 0, 0, 0, length);
+        recur(nums, sizeRightSum, length, 0, 0, nums.length);
+        int totalSum = 0;
 
-        Map<Integer, List<Integer>> mp1 = new HashMap();
-        Map<Integer, List<Integer>> mp2 = new HashMap();
-
-        for(int i=0;i<(1<<n);i++){
-            int setBits = 0, sum=0;
-            for(int j=0;j<n;j++){
-                if((i & (1<<j))!=0){
-                    setBits++;
-                    sum+= nums[j];
-                }
-            }
-            if(!mp1.containsKey(setBits)){
-                mp1.put(setBits,new ArrayList());
-            }
-            mp1.get(setBits).add(sum);
-
+        for (int num : nums) {
+            totalSum += num;
         }
-
-        for(int i=0;i<(1<<n);i++){
-            int setBits = 0, sum=0;
-            for(int j=0;j<n;j++){
-                if((i & (1<<j))!=0){
-                    setBits++;
-                    sum+= nums[n+j];
-                }
-            }
-            if(!mp2.containsKey(setBits)){
-                mp2.put(setBits,new ArrayList());
-            }
-            mp2.get(setBits).add(sum);
-
-        }
-
-        for(int i=0;i<=n;i++){
-            if(mp1.containsKey(i)){
-                Collections.sort(mp1.get(i));
-            }
-
-            if(mp2.containsKey(i)){
-                Collections.sort(mp2.get(i));
-            }
-        }
-
         int ans = Integer.MAX_VALUE;
-        for(int i=0;i<=n;i++){
-            int a = 0, b=mp2.get(n-i).size()-1;
-            while(a < mp1.get(i).size() && b>=0){
-                int sum = mp1.get(i).get(a) + mp2.get(n-i).get(b);
-                int diff = Math.abs(total - 2*sum);
-                ans = Math.min(ans,diff);
-                if(2*sum > total )b--;
-                else a++;
+
+        for (int i = 0; i <= length; i++) {
+            List<Integer> leftSum = sizeLeftSum.getOrDefault(i, new ArrayList<>());
+            List<Integer> rightSum = sizeRightSum.getOrDefault(length - i, new ArrayList<>());
+            Collections.sort(rightSum);
+
+            for (int lSum : leftSum) {
+                // coz combining two sum can max go to totalSum / 2
+                int lo = 0;
+                int hi = rightSum.size() - 1;
+
+                while (lo <= hi) {
+                    int pivot = lo + (hi - lo) / 2;
+                    //|sumA - sumB| = |(groupSum) - (total - groupSum)| = |2 * groupSum - total|
+                    // gives us the effective target difference of this grouping — how far off it is from a perfect split.
+                    int target = 2 * (lSum + rightSum.get(pivot));
+
+                    if (totalSum == target) {
+                        return 0;
+                    }
+                    if (target < totalSum) {
+                        lo = pivot + 1;
+                    } else {
+                        hi = pivot - 1;
+                    }
+                }
+
+                if (lo < rightSum.size()) {
+                    ans = Math.min(ans, Math.abs(totalSum - 2 * (lSum + rightSum.get(lo))));
+                }
+
+                if (hi > 0) {
+                    ans = Math.min(ans, Math.abs(totalSum - 2 * (lSum + rightSum.get(hi))));
+                }
             }
-
-
         }
         return ans;
+    }
+
+    private void recur(int[] nums, Map<Integer, List<Integer>> sizeSum, int index, int size, int sum, int endIndex) {
+
+        if (index >= endIndex) {
+            List<Integer> sumList = sizeSum.getOrDefault(size, new ArrayList<>());
+            sumList.add(sum);
+            sizeSum.put(size, sumList);
+            return;
+        }
+        // include
+        recur(nums, sizeSum, index + 1, size + 1, sum + nums[index], endIndex);
+        // exclude
+        recur(nums, sizeSum, index + 1, size, sum, endIndex);
+
     }
 
 }
