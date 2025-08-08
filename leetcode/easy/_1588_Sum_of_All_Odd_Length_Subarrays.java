@@ -58,4 +58,23 @@ public class _1588_Sum_of_All_Odd_Length_Subarrays {
         }
         return ans;
     }
+    // ============================================================================================
+    public int sumOddLengthSubarrays1(int[] arr) {
+        int ans = 0;
+        /*
+        Idea is to check the odd length subarray of which the current position
+        is a part of
+        */
+        for (int i = 0; i < arr.length; i++) {
+            int totalLeftSubarray = i + 1;
+            int totalRightSubarray = arr.length - i;
+            int totalSubArrays = totalLeftSubarray * totalRightSubarray;
+            /*
+            odd length subarrays will be totalsubArrays by 2
+            to incorporate odd length array we add 1 to it
+            */
+            ans += ((totalSubArrays + 1) / 2) * arr[i];
+        }
+        return ans;
+    }
 }
