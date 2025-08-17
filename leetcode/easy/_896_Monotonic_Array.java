@@ -39,11 +39,11 @@ public class _896_Monotonic_Array {
         for (int i = 0; i < nums.length - 1; i++) {
 
             if (nums[i] < nums[i + 1]) {
-                increasing = false;
+                decreasing = false;
             }
 
             if (nums[i] > nums[i + 1]) {
-                decreasing = false;
+                increasing = false;
             }
         }
         return increasing || decreasing;

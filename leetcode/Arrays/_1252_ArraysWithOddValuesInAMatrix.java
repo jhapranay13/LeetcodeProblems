@@ -114,4 +114,29 @@ public class _1252_ArraysWithOddValuesInAMatrix {
 		}
 		return oddCount;
 	}
+	//=================================================================================================
+	public int oddCells2(int m, int n, int[][] indices) {
+		int[] rows = new int[m];
+		int[] cols = new int[n];
+
+		for (int i = 0; i < indices.length; i++) {
+			int r = indices[i][0];
+			int c = indices[i][1];
+			rows[r]++;
+			cols[c]++;
+		}
+		int ans = 0;
+
+		for (int r = 0; r < m; r++) {
+
+			for (int c = 0; c < n; c++) {
+				int val = rows[r] + cols[c];
+
+				if (val % 2 != 0) {
+					ans++;
+				}
+			}
+		}
+		return ans;
+	}
 }

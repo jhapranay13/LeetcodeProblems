@@ -66,4 +66,36 @@ public class _781_Rabbits_in_Forest {
         }
         return ans;
     }
+    //=============================================================================================
+    /*
+    Breakdown:
+        Two rabbits say “1 other like me” → group size = 2
+
+        So we need 1 group of size 2 → covers 2 rabbits
+
+        One rabbit says “2 others like me” → group size = 3
+
+        We need 1 group of size 3 → covers 1 rabbit (but we must assume 2 more exist)
+     */
+    public int numRabbits1(int[] answers) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int total = 0;
+
+        for (int answer : answers) {
+            // Count how many times this answer appears
+            map.put(answer, map.getOrDefault(answer, 0) + 1);
+        }
+
+        for (int k : map.keySet()) {
+            int count = map.get(k);
+            int groupSize = k + 1;
+
+            // Number of groups needed for this answer
+            int groups = (int) Math.ceil(count / (double) groupSize);
+
+            total += groups * groupSize;
+        }
+
+        return total;
+    }
 }

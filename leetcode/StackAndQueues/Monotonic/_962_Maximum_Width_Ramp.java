@@ -1,5 +1,6 @@
 package leetcode.StackAndQueues.Monotonic;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -82,6 +83,55 @@ public class _962_Maximum_Width_Ramp {
                 }
                 ans = Math.max(ans, i - decreasingList.get(res));
             }
+        }
+        return ans;
+    }
+    //=============================================================================================
+    public int maxWidthRamp2(int[] nums) {
+        int[] rightToLeftMax = new int[nums.length];
+
+        for (int i = nums.length - 1; i >= 0; i--) {
+
+            if (i == nums.length - 1) {
+                rightToLeftMax[i] = nums[i];
+            } else {
+                rightToLeftMax[i] = Math.max(rightToLeftMax[i + 1] , nums[i]);
+            }
+        }
+        int left = 0;
+        int right = 0;
+        int maxWidth = 0;
+
+        while (right < nums.length) {
+
+            while (left < right && nums[left] > rightToLeftMax[right]) {
+                left++;
+            }
+            maxWidth = Math.max(maxWidth, right - left);
+            right++;
+        }
+        return maxWidth;
+    }
+    //=============================================================================================
+    public int maxWidthRamp3(int[] nums) {
+        Integer[] indices = new Integer[nums.length];
+
+        for (int i = 0; i < indices.length; i++) {
+            indices[i] = i;
+        }
+        Arrays.sort(indices, (i, j) -> {
+
+            if (nums[i] == nums[j]) {
+                return i - j;
+            }
+            return nums[i] - nums[j];
+        });
+        int prevIndice = nums.length;
+        int ans = 0;
+
+        for (int indice : indices) {
+            ans = Math.max(ans, indice - prevIndice);
+            prevIndice = Math.min(prevIndice, indice);
         }
         return ans;
     }
