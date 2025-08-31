@@ -1,5 +1,8 @@
 package leetcode.Arrays;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  *
  * Given an m x n binary matrix mat, return the number of submatrices that have all ones.
@@ -85,6 +88,54 @@ public class _1504_Count_Submatrices_With_All_Ones {
                 count += haveAllOne(mat, i, j);
             }
         }
+        return count;
+    }
+    //=============================================================================================
+    public int numSubmat2(int[][] matrix) {
+        int m = matrix.length, n = matrix[0].length;
+        int[][] heights = new int[m][n];
+        int result = 0;
+
+        // Step 1: Build heights array
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 1) {
+                    heights[i][j] = (i == 0) ? 1 : heights[i - 1][j] + 1;
+                }
+            }
+        }
+
+        // Step 2: For each row, count submatrices using that row as the bottom
+        for (int i = 0; i < m; i++) {
+            result += countRowSubmatrices(heights[i]);
+        }
+
+        return result;
+    }
+
+    // Count number of submatrices ending at each column in a row
+    private int countRowSubmatrices(int[] row) {
+        int n = row.length;
+        int count = 0;
+        Deque<Integer> stack = new ArrayDeque<>();
+        int[] sum = new int[n]; // sum[i] stores total count of rectangles ending at i
+
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && row[stack.peek()] >= row[i]) {
+                stack.pop();
+            }
+
+            if (stack.isEmpty()) {
+                sum[i] = row[i] * (i + 1);
+            } else {
+                int prev = stack.peek();
+                sum[i] = sum[prev] + row[i] * (i - prev);
+            }
+
+            stack.push(i);
+            count += sum[i];
+        }
+
         return count;
     }
 

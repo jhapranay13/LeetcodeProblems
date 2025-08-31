@@ -70,4 +70,32 @@ public class _1089_Duplicate_Zeros {
             }
         }
     }
+    //=============================================================================================
+    public void duplicateZeros1(int[] arr) {
+        int n = arr.length;
+        int zeros = 0;
+
+        // Step 1: Count zeros that will be duplicated
+        for (int i = 0; i < n; i++) {
+            if (arr[i] == 0) zeros++;
+        }
+
+        // Step 2: Start from end and shift backwards
+        for (int i = n - 1; i >= 0; i--) {
+            int newPos = i + zeros;
+
+            // If the new position is within bounds, copy the value
+            if (newPos < n) {
+                arr[newPos] = arr[i];
+            }
+
+            // If it's a zero, we need to duplicate it
+            if (arr[i] == 0) {
+                zeros--; // We've used one extra space for this zero
+                if (i + zeros < n) {
+                    arr[i + zeros] = 0;
+                }
+            }
+        }
+    }
 }
