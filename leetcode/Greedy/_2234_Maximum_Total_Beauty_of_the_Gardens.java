@@ -57,6 +57,106 @@ import java.util.Arrays;
  */
 
 public class _2234_Maximum_Total_Beauty_of_the_Gardens {
+    public long maximumBeauty2(int[] flowers, long newFlowers, int target, int full, int partial) {
+        int n = flowers.length;
+        Arrays.sort(flowers);
+
+        // Prefix sum: prefix[i] = sum of first i elements (1-based for convenience)
+        long[] prefix = new long[n + 1];
+        for (int i = 1; i <= n; i++) {
+            prefix[i] = prefix[i - 1] + flowers[i - 1];
+        }
+
+        // If even the smallest garden already >= target → all full
+        if (flowers[0] >= target) return 1L * n * full;
+
+        // Find last garden below target (index of last incomplete garden)
+        int lastIncomplete = n - 1;
+        while (lastIncomplete >= 0 && flowers[lastIncomplete] >= target) {
+            lastIncomplete--;
+        }
+
+        // Gardens already full
+        int alreadyFull = n - 1 - lastIncomplete;
+        long baseBeauty = (long) alreadyFull * full;
+
+        // If all are full already
+        if (alreadyFull == n) return baseBeauty;
+
+        long maxBeauty = 0;
+
+        // Try completing different numbers of largest incomplete gardens
+        for (int completeCount = 0; completeCount <= lastIncomplete + 1; completeCount++) {
+            // Number of gardens we plan to make full from the end of the incomplete group
+            long flowersNeeded = 0;
+            if (completeCount > 0) {
+                int start = lastIncomplete - completeCount + 1;
+                // Cost to make these gardens reach target
+                flowersNeeded = (long) target * completeCount
+                        - (prefix[lastIncomplete + 1] - prefix[start]);
+            }
+
+            if (flowersNeeded > newFlowers) break; // not enough to make more gardens full
+
+            long remaining = newFlowers - flowersNeeded;
+            long partialValue = 0;
+
+            // If not all gardens are complete, maximize min among the remaining incomplete ones
+            if (lastIncomplete - completeCount + 1 > 0) {
+                int incompleteCount = lastIncomplete - completeCount + 1;
+                partialValue = findMaxPartial(flowers, prefix, incompleteCount, remaining, target);
+            }
+
+            long totalBeauty = baseBeauty + (long) completeCount * full + partialValue * partial;
+            maxBeauty = Math.max(maxBeauty, totalBeauty);
+        }
+
+        // Special check: can all gardens be made full?
+        long totalFlowersNeeded = (long) target * (lastIncomplete + 1) - prefix[lastIncomplete + 1];
+        if (totalFlowersNeeded <= newFlowers) {
+            maxBeauty = Math.max(maxBeauty, 1L * n * full);
+        }
+
+        return maxBeauty;
+    }
+
+    /**
+     * Binary search to find the maximum possible minimum value (partialValue)
+     * among incomplete gardens given remaining flowers.
+     */
+    private long findMaxPartial(int[] flowers, long[] prefix, int count, long remaining, int target) {
+        long left = 0, right = target - 1, best = 0;
+
+        while (left <= right) {
+            long mid = (left + right) / 2;
+            int idx = upperBound(flowers, count, (int) mid);
+            long cost = mid * idx - prefix[idx];
+
+            if (cost <= remaining) {
+                best = mid;  // possible, try higher
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return best;
+    }
+
+    /**
+     * Finds the index of the first garden > value in the first `len` gardens
+     * (i.e., count of gardens ≤ value).
+     */
+    private int upperBound(int[] flowers, int len, int value) {
+        int l = 0, r = len;
+        while (l < r) {
+            int mid = (l + r) / 2;
+            if (flowers[mid] <= value) l = mid + 1;
+            else r = mid;
+        }
+        return l;
+    }
+
+    //=============================================================================================
     public long maximumBeauty(int[] flowers, long newFlowers, int target, int full, int partial) {
         Arrays.sort(flowers);
 
