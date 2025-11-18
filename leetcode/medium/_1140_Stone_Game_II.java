@@ -68,4 +68,44 @@ public class _1140_Stone_Game_II {
         }
         return memo[m][index] = ans;
     }
+    //=============================================================================================
+        int[] piles;
+        int[] suffix;
+        Integer[][] dp;
+
+        public int stoneGameII_1(int[] piles) {
+            this.piles = piles;
+            int n = piles.length;
+
+            suffix = new int[n + 1];
+            dp = new Integer[n][n + 1]; // i from [0..n-1], M from [1..n]
+
+            // Build suffix sum: suffix[i] = total stones from i to end
+            for (int i = n - 1; i >= 0; i--) {
+                suffix[i] = suffix[i + 1] + piles[i];
+            }
+
+            return solve(0, 1);  // Start at index 0, M=1
+        }
+
+        private int solve(int i, int M) {
+            int n = piles.length;
+            if (i >= n) return 0;
+
+            if (dp[i][M] != null) return dp[i][M];
+
+            int best = 0;
+            // Try taking X piles, where 1 ≤ X ≤ 2M
+            for (int X = 1; X <= 2 * M && i + X <= n; X++) {
+                // Opponent gets solve(i + X, max(M, X))
+                int opponent = solve(i + X, Math.max(M, X));
+
+                // Current gets totalRemaining - opponent
+                best = Math.max(best, suffix[i] - opponent);
+            }
+
+            return dp[i][M] = best;
+        }
+
+
 }
