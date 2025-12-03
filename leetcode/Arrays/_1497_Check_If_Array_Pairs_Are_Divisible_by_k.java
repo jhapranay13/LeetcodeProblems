@@ -41,7 +41,7 @@ import java.util.Map;
  *
  */
 
-public class Arrays.toString()_Check_If_Array_Pairs_Are_Divisible_by_k {
+public class _1497_Check_If_Array_Pairs_Are_Divisible_by_k {
     public boolean canArrange(int[] arr, int k) {
         Map<Integer, Integer> freq = new HashMap<>();
 
