@@ -53,7 +53,7 @@ public class _2962_Count_Subarrays_Where_Max_Element_Appears_at_Least_K_Times {
             while (countMap.getOrDefault(maxNum, 0) == k) {
                 ans++;
                 ans += nums.length - fast - 1;
-                int slowNumCnt = countMap.get(num);
+                int slowNumCnt = countMap.get(nums[slow]);
 
                 if (slowNumCnt == 1) {
                     countMap.remove(nums[slow]);
