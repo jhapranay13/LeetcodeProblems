@@ -286,4 +286,160 @@ public class  _218_The_Skyline_Problem {
         }
         return ans;
     }
+    //=============================================================================================
+    // Plain PriorityQueue Solution
+    public List<List<Integer>> getSkyline4(int[][] buildings) {
+        List<int[]> events = new ArrayList<>();
+
+        // Step 1: Create events
+        for (int[] b : buildings) {
+            events.add(new int[]{b[0], -b[2]}); // start
+            events.add(new int[]{b[1], b[2]});  // end
+        }
+
+        // Step 2: Sort events
+        Collections.sort(events, (a, b) -> {
+            if (a[0] != b[0]) return a[0] - b[0];
+            return a[1] - b[1];
+        });
+
+        // Step 3: Max heap for heights
+        PriorityQueue<Integer> maxHeap =
+                new PriorityQueue<>(Collections.reverseOrder());
+        maxHeap.add(0);
+
+        int prevMax = 0;
+        List<List<Integer>> result = new ArrayList<>();
+
+        // Step 4: Sweep line
+        for (int[] event : events) {
+            int x = event[0];
+            int h = event[1];
+
+            if (h < 0) {
+                maxHeap.add(-h); // start building
+            } else {
+                maxHeap.remove(h); // end building
+            }
+
+            int currMax = maxHeap.peek();
+            if (currMax != prevMax) {
+                result.add(Arrays.asList(x, currMax));
+                prevMax = currMax;
+            }
+        }
+
+        return result;
+    }
+    //=============================================================================================
+    // Better PriorityQueue Solution
+    public List<List<Integer>> getSkyline5(int[][] buildings) {
+        List<int[]> events = new ArrayList<>();
+
+        // Create events
+        for (int[] b : buildings) {
+            events.add(new int[]{b[0], -b[2]}); // start
+            events.add(new int[]{b[1], b[2]});  // end
+        }
+
+        // Sort events
+        Collections.sort(events, (a, b) -> {
+            if (a[0] != b[0]) return a[0] - b[0];
+            return a[1] - b[1];
+        });
+
+        // Max heap
+        PriorityQueue<Integer> pq =
+                new PriorityQueue<>(Collections.reverseOrder());
+
+        // Height count map
+        Map<Integer, Integer> count = new HashMap<>();
+
+        pq.offer(0);
+        count.put(0, 1);
+
+        int prevMax = 0;
+        List<List<Integer>> res = new ArrayList<>();
+
+        // Sweep line
+        for (int[] e : events) {
+            int x = e[0];
+            int h = e[1];
+
+            if (h < 0) {
+                // Start building
+                int height = -h;
+                pq.offer(height);
+                count.put(height, count.getOrDefault(height, 0) + 1);
+            } else {
+                // End building
+                count.put(h, count.get(h) - 1);
+            }
+
+            // Remove inactive heights
+            while (!pq.isEmpty() && count.get(pq.peek()) == 0) {
+                pq.poll();
+            }
+
+            int currMax = pq.peek();
+            if (currMax != prevMax) {
+                res.add(Arrays.asList(x, currMax));
+                prevMax = currMax;
+            }
+        }
+
+        return res;
+    }
+    //=============================================================================================
+    // Better TreeMap Solution
+    public List<List<Integer>> getSkyline6(int[][] buildings) {
+        List<int[]> events = new ArrayList<>();
+
+        // Step 1: Create events
+        for (int[] b : buildings) {
+            events.add(new int[]{b[0], -b[2]}); // start
+            events.add(new int[]{b[1], b[2]});  // end
+        }
+
+        // Step 2: Sort events
+        Collections.sort(events, (a, b) -> {
+            if (a[0] != b[0]) return a[0] - b[0];
+            return a[1] - b[1];
+        });
+
+        // Step 3: TreeMap to store heights
+        TreeMap<Integer, Integer> heightMap = new TreeMap<>();
+        heightMap.put(0, 1); // ground level
+
+        int prevMax = 0;
+        List<List<Integer>> res = new ArrayList<>();
+
+        // Step 4: Sweep line
+        for (int[] e : events) {
+            int x = e[0];
+            int h = e[1];
+
+            if (h < 0) {
+                // Start building
+                int height = -h;
+                heightMap.put(height, heightMap.getOrDefault(height, 0) + 1);
+            } else {
+                // End building
+                int cnt = heightMap.get(h) - 1;
+                if (cnt == 0) {
+                    heightMap.remove(h);
+                } else {
+                    heightMap.put(h, cnt);
+                }
+            }
+
+            int currMax = heightMap.lastKey();
+            if (currMax != prevMax) {
+                res.add(Arrays.asList(x, currMax));
+                prevMax = currMax;
+            }
+        }
+
+        return res;
+    }
 }
